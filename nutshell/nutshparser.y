@@ -12,25 +12,31 @@ int yylex(void);
 int yyerror(char *s);
 int runCD(char* arg);
 int runSetAlias(char *name, char *word);
+int runAlias();
+int runUnalias(char *name);
+int runTest();
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE CD STRING ALIAS END
+%token <string> BYE CD STRING ALIAS END TEST UNALIAS
 
 %%
 cmd_line    :
 	BYE END 		                {exit(1); return 1; }
 	| CD STRING END        			{runCD($2); return 1;}
+	| ALIAS END						{runAlias(); return 1;}
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
+	| UNALIAS STRING END			{runUnalias($2); return 1;}
+	| TEST END						{runTest(); return 1;}
 
 %%
 
 int yyerror(char *s) {
   printf("%s\n",s);
   return 0;
-  }
+}
 
 int runCD(char* arg) {
 	if (arg[0] != '/') { // arg is relative path
@@ -78,5 +84,29 @@ int runSetAlias(char *name, char *word) {
 	strcpy(aliasTable.word[aliasIndex], word);
 	aliasIndex++;
 
+	return 1;
+}
+
+int runAlias() {
+	for (int i = 0; i < aliasIndex; i++) {
+		printf("%s=%s\n", aliasTable.name[i], aliasTable.word[i]);
+	}
+	return 1;
+}
+
+int runUnalias(char *name) {
+	printf("attempted unalias on %s\n", name);
+	for (int i = 0; i < aliasIndex; i++) {
+		if (strcmp(aliasTable.name[i], name) == 0)
+		{
+			printf("Trying to remove alias from name: %s\nAt index: %d", aliasTable.name[i], i);
+
+		}
+	}
+	return 1;
+}
+
+int runTest() {
+	printf("Hello\n");
 	return 1;
 }

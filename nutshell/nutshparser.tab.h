@@ -43,7 +43,9 @@
      CD = 259,
      STRING = 260,
      ALIAS = 261,
-     END = 262
+     END = 262,
+     TEST = 263,
+     UNALIAS = 264
    };
 #endif
 /* Tokens.  */
@@ -52,16 +54,18 @@
 #define STRING 260
 #define ALIAS 261
 #define END 262
+#define TEST 263
+#define UNALIAS 264
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 17 "nutshparser.y"
+#line 20 "nutshparser.y"
 {char *string;}
 /* Line 1529 of yacc.c.  */
-#line 65 "nutshparser.tab.h"
+#line 69 "nutshparser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

@@ -37,7 +37,9 @@ ANYCHAR            [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_
 
 [ ]		            { }
 bye                 { return BYE; }
+test                { return TEST; }
 cd		            { return CD;}
+unalias             { return UNALIAS; }
 alias		        { return ALIAS; }
 "\n"		        { return END; }
 [\"]                 { BEGIN(string_condition); }
