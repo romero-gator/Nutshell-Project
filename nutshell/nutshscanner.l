@@ -6,6 +6,8 @@
 #include <string.h>
 #include "global.h"
 
+bool isUnalias = false;
+
 char* subAliases(char* name){
     for (int i = 0; i < aliasIndex; i++) {
         if(strcmp(aliasTable.name[i], name) == 0) {
@@ -14,6 +16,15 @@ char* subAliases(char* name){
     }
     return name;
 }
+
+void setUnAlias() {
+    if(isUnalias) {
+        isUnalias = false;
+    } else {
+        isUnalias = true;
+    }
+}
+
 bool ifAlias(char* name){
     for (int i = 0; i < aliasIndex; i++) {
         if(strcmp(aliasTable.name[i], name) == 0) {
@@ -37,13 +48,25 @@ ANYCHAR            [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_
 
 [ ]		            { }
 bye                 { return BYE; }
-test                { return TEST; }
-cd		            { return CD;}
-unalias             { return UNALIAS; }
+printenv            { return PRINTENV; }
+setenv              { return SETENV; }
+unsetenv            { return UNSETENV; }
+cd		            { return CD; }
 alias		        { return ALIAS; }
+unalias             { setUnAlias(); 
+                      return UNALIAS; }
+echo                { return ECHO; }
+date                { return DATE; }
+ls                  { return LS; }
 "\n"		        { return END; }
 [\"]                 { BEGIN(string_condition); }
-{CHAR}+              {if(ifAlias(yytext)) {
+{CHAR}+              { if(isUnalias) {
+                        setUnAlias();
+                        yylval.string = strdup(yytext);
+                        return STRING;
+                    }
+
+                    if(ifAlias(yytext)) {
                         printf("yytext: %s\n", yytext);
                         //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
                            char *yycopy = strdup( subAliases(yytext) );

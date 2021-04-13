@@ -40,32 +40,42 @@
       know about them.  */
    enum yytokentype {
      BYE = 258,
-     CD = 259,
-     STRING = 260,
-     ALIAS = 261,
-     END = 262,
-     TEST = 263,
-     UNALIAS = 264
+     PRINTENV = 259,
+     UNSETENV = 260,
+     CD = 261,
+     STRING = 262,
+     ALIAS = 263,
+     UNALIAS = 264,
+     SETENV = 265,
+     ECHO = 266,
+     LS = 267,
+     DATE = 268,
+     END = 269
    };
 #endif
 /* Tokens.  */
 #define BYE 258
-#define CD 259
-#define STRING 260
-#define ALIAS 261
-#define END 262
-#define TEST 263
+#define PRINTENV 259
+#define UNSETENV 260
+#define CD 261
+#define STRING 262
+#define ALIAS 263
 #define UNALIAS 264
+#define SETENV 265
+#define ECHO 266
+#define LS 267
+#define DATE 268
+#define END 269
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 20 "nutshparser.y"
+#line 27 "nutshparser.y"
 {char *string;}
 /* Line 1529 of yacc.c.  */
-#line 69 "nutshparser.tab.h"
+#line 79 "nutshparser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
