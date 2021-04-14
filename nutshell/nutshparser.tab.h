@@ -50,7 +50,11 @@
      ECHO = 266,
      LS = 267,
      DATE = 268,
-     END = 269
+     TOUCH = 269,
+     MKDIR = 270,
+     RM = 271,
+     RMDIR = 272,
+     END = 273
    };
 #endif
 /* Tokens.  */
@@ -65,17 +69,21 @@
 #define ECHO 266
 #define LS 267
 #define DATE 268
-#define END 269
+#define TOUCH 269
+#define MKDIR 270
+#define RM 271
+#define RMDIR 272
+#define END 273
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 28 "nutshparser.y"
+#line 32 "nutshparser.y"
 {char *string;}
 /* Line 1529 of yacc.c.  */
-#line 79 "nutshparser.tab.h"
+#line 87 "nutshparser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
