@@ -11,12 +11,19 @@ struct aTable {
 	char word[128][100];
 };
 
+struct cTable {
+   char cmd[128][100];
+   char arg[128][100];
+};
+
 char cwd[PATH_MAX];
 
 struct evTable varTable;
 
 struct aTable aliasTable;
 
-int aliasIndex, varIndex;
+struct cTable cmdTable;
+
+int aliasIndex, varIndex, cmdIndex;
 
 char* subAliases(char* name);

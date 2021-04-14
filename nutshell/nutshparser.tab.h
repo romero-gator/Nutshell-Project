@@ -50,7 +50,8 @@
      ECHO = 266,
      LS = 267,
      DATE = 268,
-     END = 269
+     EXPANSION = 269,
+     END = 270
    };
 #endif
 /* Tokens.  */
@@ -65,17 +66,18 @@
 #define ECHO 266
 #define LS 267
 #define DATE 268
-#define END 269
+#define EXPANSION 269
+#define END 270
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 27 "nutshparser.y"
+#line 28 "nutshparser.y"
 {char *string;}
 /* Line 1529 of yacc.c.  */
-#line 79 "nutshparser.tab.h"
+#line 81 "nutshparser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

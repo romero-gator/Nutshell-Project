@@ -33,10 +33,34 @@ bool ifAlias(char* name){
     }
     return false;
 }
+
+bool ifVarName(char* name) {
+    printf("checking varTable for %s\n", name);
+    for (int i = 0; i < varIndex; i++) {
+        if(strcmp(varTable.var[i], name) == 0) {
+            printf("found %s in varTable\n", name);
+            return true;
+        }
+    }
+    printf("%s not found in varTable\n", name);
+    return false;
+}
+
+char* getVarTableWord(char* name) {
+    printf("searching for word associated with: %s\n", name);
+    for (int i = 0; i < varIndex; i++) {
+        if (strcmp(varTable.var[i], name) == 0) {
+            printf("word is: %s\n", varTable.word[i]);
+            return varTable.word[i];
+        }
+    }
+    return name;
+}
 %}
 %array
 %option noyywrap
 %x string_condition
+%x expansion_condition
 
 CHAR            [.A-Za-z0-9!\/_-][.A-Za-z0-9!\/_-]*
 ANYCHAR            [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -]*
@@ -44,9 +68,22 @@ ANYCHAR            [)(*&%$#@!`;,\.a-zA-Z0-9'/*_=~ -][)(*&%$#@!`;,\.a-zA-Z0-9'/*_
 %%
 
 <string_condition>{ANYCHAR}+     { yylval.string = strdup(yytext); return STRING;}
-<string_condition>[\"]          {BEGIN(INITIAL);}
+<string_condition>[\"]           {BEGIN(INITIAL);}
+
+<expansion_condition>{CHAR}+    {   
+                                    if (ifVarName(yytext)) {
+                                        char *yycopy = strdup( getVarTableWord(yytext) );
+                                        for ( int i = strlen(getVarTableWord(yytext)) - 1; i >= 0; --i )
+                                            unput( yycopy[i] );
+                                        free( yycopy );
+                                    }
+                                    
+                                    return EXPANSION;
+                                }
+<expansion_condition>\}         {BEGIN(INITIAL);}
 
 [ ]		            { }
+$\{                 { BEGIN(expansion_condition); }
 bye                 { return BYE; }
 printenv            { return PRINTENV; }
 setenv              { return SETENV; }
@@ -59,24 +96,24 @@ echo                { return ECHO; }
 date                { return DATE; }
 ls                  { return LS; }
 "\n"		        { return END; }
-[\"]                 { BEGIN(string_condition); }
-{CHAR}+              { if(isUnalias) {
-                        setUnAlias();
-                        yylval.string = strdup(yytext);
-                        return STRING;
-                    }
+[\"]                { BEGIN(string_condition); }
+{CHAR}+             {   if(isUnalias) {
+                            setUnAlias();
+                            yylval.string = strdup(yytext);
+                            return STRING;
+                        }
 
-                    if(ifAlias(yytext)) {
-                        printf("yytext: %s\n", yytext);
-                        //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
-                           char *yycopy = strdup( subAliases(yytext) );
-                           for ( int i = strlen(subAliases(yytext)) - 1; i >= 0; --i )
-                               unput( yycopy[i] );
-                           free( yycopy );
-                    } else {
-                        printf("yytext: %s\n", yytext);
-                        yylval.string = strdup(yytext);
-                        return STRING;
-                    };
-                     }
+                        if(ifAlias(yytext)) {
+                            printf("yytext: %s\n", yytext);
+                            //source: https://www.cs.princeton.edu/~appel/modern/c/software/flex/flex.html
+                            char *yycopy = strdup( subAliases(yytext) );
+                            for ( int i = strlen(subAliases(yytext)) - 1; i >= 0; --i )
+                                unput( yycopy[i] );
+                            free( yycopy );
+                        } else {
+                            printf("yytext: %s\n", yytext);
+                            yylval.string = strdup(yytext);
+                            return STRING;
+                        };
+                    }
 %%

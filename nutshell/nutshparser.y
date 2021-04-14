@@ -22,12 +22,13 @@ int unAlias(char *var);
 int echo(char *word);
 int list();
 int date();
+int expansion(char *word);
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE END 
+%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE EXPANSION END 
 
 %%
 cmd_line    :
@@ -42,6 +43,7 @@ cmd_line    :
 	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
 	| UNSETENV STRING END			{unSetEnv($2); return 1;}
 	| LS END						{list(); return 1;}
+	| EXPANSION END					{expansion($1); return 1;}
 
 %%
 
@@ -255,4 +257,9 @@ int date() {
 	return 1;
 }
 
+int expansion(char *word) {
+	
+	printf("bison expansion call: %s\n");
 
+	return 1;
+}
