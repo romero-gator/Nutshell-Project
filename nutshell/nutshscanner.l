@@ -97,6 +97,7 @@ rm                  { return RM; }
 rmdir               { return RMDIR; }
 echo                { return ECHO; }
 date                { return DATE; }
+cat                 { return CAT; }
 ls                  { return LS; }
 "\n"		        { return END; }
 
