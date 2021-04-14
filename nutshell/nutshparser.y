@@ -9,6 +9,7 @@
 #include "global.h"
 #include <dirent.h>
 #include <time.h>
+#include <sys/stat.h>
 
 int yylex(void);
 int yyerror(char *s);
@@ -22,13 +23,16 @@ int unAlias(char *var);
 int echo(char *word);
 int list();
 int date();
-int expansion(char *word);
+int touch(char *filename);
+int makedir(char *path);
+int rm(char *filename);
+int removedir(char *path);
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE END 
+%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE TOUCH MKDIR RM RMDIR END 
 
 %%
 cmd_line    :
@@ -42,6 +46,10 @@ cmd_line    :
 	| ECHO STRING END				{echo($2); return 1;}
 	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
 	| UNSETENV STRING END			{unSetEnv($2); return 1;}
+	| TOUCH STRING END 				{touch($2); return 1;}
+	| MKDIR STRING END 				{makedir($2); return 1;}
+	| RM STRING END 				{rm($2); return 1;}
+	| RMDIR STRING END 				{removedir($2); return 1;}
 	| LS END						{list(); return 1;}
 
 %%
@@ -253,5 +261,51 @@ int date() {
   	time( &rawtime );
   	timeinfo = localtime ( &rawtime );
   	printf("Time and date: %s", asctime(timeinfo));
+	return 1;
+}
+
+int touch(char* filename) {
+	FILE *filePtr = NULL;
+	filePtr = fopen(filename, "a");
+
+	return 1;
+}
+
+int makedir(char* path) {
+	int status;
+
+	status = mkdir(path, 0777);
+
+	return 1;
+}
+
+int rm(char* filename) {
+
+	int success;
+
+	FILE *filePtr = NULL;
+	filePtr = fopen(filename, "w");
+
+	if(!filePtr) {
+		printf("File does not exist. \n");
+	}
+
+	fclose(filePtr);
+	success = remove(filename);
+
+	if(success == 0){
+		printf("File deleted.");
+	} else {
+		printf("Unable to delete file.");
+	}
+
+	return 1;
+}
+
+int removedir(char* path) {
+	int status;
+
+	status = rmdir(path);
+
 	return 1;
 }

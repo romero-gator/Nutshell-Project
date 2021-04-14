@@ -91,10 +91,15 @@ cd		            { return CD; }
 alias		        { return ALIAS; }
 unalias             { setUnAlias(); 
                       return UNALIAS; }
+touch               { return TOUCH; }
+mkdir               { return MKDIR; }
+rm                  { return RM; }
+rmdir               { return RMDIR; }
 echo                { return ECHO; }
 date                { return DATE; }
 ls                  { return LS; }
 "\n"		        { return END; }
+
 [$\{]               { BEGIN(expansion_condition); }
 [\"]                { BEGIN(string_condition); }
 {CHAR}+             {   if(isUnalias) {
