@@ -54,7 +54,8 @@
      MKDIR = 270,
      RM = 271,
      RMDIR = 272,
-     END = 273
+     CAT = 273,
+     END = 274
    };
 #endif
 /* Tokens.  */
@@ -73,17 +74,18 @@
 #define MKDIR 270
 #define RM 271
 #define RMDIR 272
-#define END 273
+#define CAT 273
+#define END 274
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 32 "nutshparser.y"
+#line 33 "nutshparser.y"
 {char *string;}
 /* Line 1529 of yacc.c.  */
-#line 87 "nutshparser.tab.h"
+#line 89 "nutshparser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
