@@ -104,7 +104,6 @@ ls                      { return LS; }
 \>|\<|\>\>|2\>|2\>&1    { return REDIRECT; }
 "\n"		            { return END; }
 \|                      { return PIPE; }
-\>                      { return IOREDIRECT; }
 [$\{]                   { BEGIN(expansion_condition); }
 [\"]                    { BEGIN(string_condition); }
 {CHAR}+                 {   if(isUnalias) {

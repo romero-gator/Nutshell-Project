@@ -400,19 +400,20 @@ int pipeCommands(char *cmd1, char *cmd2) {
 
 char* breakUpPathAndSearch(char *cmdName) {
 	char *ret = cmdName;
-	char *pathVar = varTable.word[3];
-	char *diffPaths = strtok(pathVar, ":");
-	while (diffPaths != NULL) {
-		ret = searchPath(diffPaths, 0, cmdName);
+	char *pathVar;
+	strcpy(pathVar, varTable.word[3]);
+	pathVar = strtok(pathVar, ":");
+	while (pathVar != NULL) {
+		ret = searchPath(pathVar, 0, cmdName);
 		if (ret != cmdName)
 			break;
-		diffPaths = strtok(NULL, ":");
+		pathVar = strtok(NULL, ":");
 	}
 	
 	if (ret == cmdName)
-		printf("couldn't find %s in path\n", cmdName);
+		printf("Couldn't find %s\n", cmdName);
 	else {
-		printf("found %s in %s\n", cmdName, ret);
+		printf("Found %s in %s\n", cmdName, ret);
 	}
 	
 	return ret;
@@ -433,20 +434,15 @@ char* searchPath(char *basePath, const int root, char *cmdName)
     {
         if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
         {
-			printf("%s\n", dp->d_name);
-			if (strcmp(dp->d_name, cmdName) == 0) {
-				printf("\nFOUND IT!\n");
-				strcpy(path, basePath);
-            	strcat(path, "/");
-            	strcat(path, dp->d_name);
-				printf("path=%s\n", path);
-				ret = path;
-				break;
-			}
-			
             strcpy(path, basePath);
             strcat(path, "/");
             strcat(path, dp->d_name);
+
+			if (strcmp(dp->d_name, cmdName) == 0) {
+				ret = path;
+				break;
+			}
+
             ret = searchPath(path, root + 2, cmdName);
         }
     }

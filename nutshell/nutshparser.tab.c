@@ -81,14 +81,11 @@
      MKDIR = 270,
      RM = 271,
      RMDIR = 272,
-<<<<<<< HEAD
-     PIPE = 273,
-     IOREDIRECT = 274,
-     END = 275
-=======
      CAT = 273,
-     END = 274
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+     PIPE = 274,
+     REDIRECT = 275,
+     RUNSILENTLY = 276,
+     END = 277
    };
 #endif
 /* Tokens.  */
@@ -107,14 +104,11 @@
 #define MKDIR 270
 #define RM 271
 #define RMDIR 272
-<<<<<<< HEAD
-#define PIPE 273
-#define IOREDIRECT 274
-#define END 275
-=======
 #define CAT 273
-#define END 274
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#define PIPE 274
+#define REDIRECT 275
+#define RUNSILENTLY 276
+#define END 277
 
 
 
@@ -151,11 +145,10 @@ int touch(char *filename);
 int makedir(char *path);
 int rm(char *filename);
 int removedir(char *path);
-<<<<<<< HEAD
-int pipeCommands(char *cmd1, char *cmd2);
-=======
 int cat(char *filename);
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+int pipeCommands(char *cmd1, char *cmd2);
+char* breakUpPathAndSearch(char *cmdName);
+char* searchPath(char *basePath, const int root, char *cmdName);
 
 
 /* Enabling traces.  */
@@ -178,17 +171,10 @@ int cat(char *filename);
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-<<<<<<< HEAD
-#line 34 "nutshparser.y"
+#line 37 "nutshparser.y"
 {char *string;}
 /* Line 193 of yacc.c.  */
-#line 171 "nutshparser.tab.c"
-=======
-#line 33 "nutshparser.y"
-{char *string;}
-/* Line 193 of yacc.c.  */
-#line 168 "nutshparser.tab.c"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 178 "nutshparser.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -201,11 +187,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-<<<<<<< HEAD
-#line 184 "nutshparser.tab.c"
-=======
-#line 181 "nutshparser.tab.c"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 191 "nutshparser.tab.c"
 
 #ifdef short
 # undef short
@@ -418,20 +400,12 @@ union yyalloc
 #endif
 
 /* YYFINAL -- State number of the termination state.  */
-<<<<<<< HEAD
-#define YYFINAL  32
-=======
 #define YYFINAL  33
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   53
+#define YYLAST   55
 
 /* YYNTOKENS -- Number of terminals.  */
-<<<<<<< HEAD
-#define YYNTOKENS  22
-=======
-#define YYNTOKENS  20
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#define YYNTOKENS  23
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  2
 /* YYNRULES -- Number of rules.  */
@@ -441,11 +415,7 @@ union yyalloc
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-<<<<<<< HEAD
-#define YYMAXUTOK   275
-=======
-#define YYMAXUTOK   274
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#define YYMAXUTOK   277
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -457,7 +427,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,    21,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -480,11 +450,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-<<<<<<< HEAD
-      15,    16,    17,    18,    19,    20
-=======
-      15,    16,    17,    18,    19
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+      15,    16,    17,    18,    19,    20,    21,    22
 };
 
 #if YYDEBUG
@@ -493,45 +459,26 @@ static const yytype_uint8 yytranslate[] =
 static const yytype_uint8 yyprhs[] =
 {
        0,     0,     3,     6,     9,    13,    16,    21,    24,    28,
-<<<<<<< HEAD
-      32,    37,    41,    45,    49,    53,    57,    60
-=======
       32,    37,    41,    45,    49,    53,    57,    61
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-<<<<<<< HEAD
-      23,     0,    -1,     3,    20,    -1,     4,    20,    -1,     6,
-       7,    20,    -1,     8,    20,    -1,     8,     7,     7,    20,
-      -1,    13,    20,    -1,     9,     7,    20,    -1,    11,     7,
-      20,    -1,    10,     7,     7,    20,    -1,     5,     7,    20,
-      -1,    14,     7,    20,    -1,    15,     7,    20,    -1,    16,
-       7,    20,    -1,    17,     7,    20,    -1,    12,    20,    -1,
-       8,    18,    11,    20,    -1
-=======
-      21,     0,    -1,     3,    19,    -1,     4,    19,    -1,     6,
-       7,    19,    -1,     8,    19,    -1,     8,     7,     7,    19,
-      -1,    13,    19,    -1,     9,     7,    19,    -1,    11,     7,
-      19,    -1,    10,     7,     7,    19,    -1,     5,     7,    19,
-      -1,    14,     7,    19,    -1,    15,     7,    19,    -1,    16,
-       7,    19,    -1,    17,     7,    19,    -1,    18,     7,    19,
-      -1,    12,    19,    -1
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+      24,     0,    -1,     3,    22,    -1,     4,    22,    -1,     6,
+       7,    22,    -1,     8,    22,    -1,     8,     7,     7,    22,
+      -1,    13,    22,    -1,     9,     7,    22,    -1,    11,     7,
+      22,    -1,    10,     7,     7,    22,    -1,     5,     7,    22,
+      -1,    14,     7,    22,    -1,    15,     7,    22,    -1,    16,
+       7,    22,    -1,    17,     7,    22,    -1,    18,     7,    22,
+      -1,    12,    22,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-<<<<<<< HEAD
-       0,    41,    41,    42,    43,    44,    45,    46,    47,    48,
-      49,    50,    51,    52,    53,    54,    55,    56
-=======
-       0,    40,    40,    41,    42,    43,    44,    45,    46,    47,
-      48,    49,    50,    51,    52,    53,    54,    55
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+       0,    44,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    56,    57,    58,    59
 };
 #endif
 
@@ -542,12 +489,8 @@ static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "BYE", "PRINTENV", "UNSETENV", "CD",
   "STRING", "ALIAS", "UNALIAS", "SETENV", "ECHO", "LS", "DATE", "TOUCH",
-<<<<<<< HEAD
-  "MKDIR", "RM", "RMDIR", "PIPE", "IOREDIRECT", "END", "','", "$accept",
-  "cmd_line", 0
-=======
-  "MKDIR", "RM", "RMDIR", "CAT", "END", "$accept", "cmd_line", 0
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+  "MKDIR", "RM", "RMDIR", "CAT", "PIPE", "REDIRECT", "RUNSILENTLY", "END",
+  "$accept", "cmd_line", 0
 };
 #endif
 
@@ -557,36 +500,23 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-<<<<<<< HEAD
      265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,    44
-=======
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+     275,   276,   277
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-<<<<<<< HEAD
-       0,    22,    23,    23,    23,    23,    23,    23,    23,    23,
-      23,    23,    23,    23,    23,    23,    23,    23
-=======
-       0,    20,    21,    21,    21,    21,    21,    21,    21,    21,
-      21,    21,    21,    21,    21,    21,    21,    21
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+       0,    23,    24,    24,    24,    24,    24,    24,    24,    24,
+      24,    24,    24,    24,    24,    24,    24,    24
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
        0,     2,     2,     2,     3,     2,     4,     2,     3,     3,
-<<<<<<< HEAD
-       4,     3,     3,     3,     3,     3,     2,     4
-=======
        4,     3,     3,     3,     3,     3,     3,     2
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -595,17 +525,10 @@ static const yytype_uint8 yyr2[] =
 static const yytype_uint8 yydefact[] =
 {
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
-<<<<<<< HEAD
-       0,     0,     0,     0,     0,     0,     2,     3,     0,     0,
-       0,     0,     5,     0,     0,     0,    16,     7,     0,     0,
-       0,     0,     1,    11,     4,     0,     0,     8,     0,     9,
-      12,    13,    14,    15,     6,    17,    10
-=======
        0,     0,     0,     0,     0,     0,     0,     2,     3,     0,
        0,     0,     5,     0,     0,     0,    17,     7,     0,     0,
        0,     0,     0,     1,    11,     4,     0,     8,     0,     9,
       12,    13,    14,    15,    16,     6,    10
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -616,35 +539,20 @@ static const yytype_int8 yydefgoto[] =
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-<<<<<<< HEAD
-#define YYPACT_NINF -17
+#define YYPACT_NINF -19
 static const yytype_int8 yypact[] =
 {
-      -3,   -16,    -4,    10,    11,     8,    12,    13,    14,     2,
-       3,    17,    18,    20,    22,    30,   -17,   -17,    15,    16,
-      24,    21,   -17,    19,    26,    23,   -17,   -17,    25,    27,
-      28,    29,   -17,   -17,   -17,    31,    32,   -17,    33,   -17,
-     -17,   -17,   -17,   -17,   -17,   -17,   -17
-=======
-#define YYPACT_NINF -16
-static const yytype_int8 yypact[] =
-{
-      -3,   -15,    -2,    11,    12,     9,    13,    14,    15,     4,
-       5,    18,    19,    20,    22,    23,    31,   -16,   -16,    16,
-      17,    25,   -16,    21,    26,    24,   -16,   -16,    27,    28,
-      29,    30,    32,   -16,   -16,   -16,    33,   -16,    34,   -16,
-     -16,   -16,   -16,   -16,   -16,   -16,   -16
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+      -3,   -18,    -5,    11,    12,     9,    13,    14,    15,     1,
+       2,    18,    19,    20,    21,    22,    30,   -19,   -19,    10,
+      16,    26,   -19,    17,    27,    23,   -19,   -19,    24,    25,
+      28,    29,    31,   -19,   -19,   -19,    32,   -19,    33,   -19,
+     -19,   -19,   -19,   -19,   -19,   -19,   -19
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-<<<<<<< HEAD
-     -17,   -17
-=======
-     -16,   -16
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+     -19,   -19
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -654,39 +562,22 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-<<<<<<< HEAD
-       1,     2,     3,     4,    16,     5,     6,     7,     8,     9,
-      10,    11,    12,    13,    14,    20,    17,    18,    19,    23,
-      24,    25,    26,    27,    28,    29,    21,    30,    22,    31,
-      32,    35,    36,    38,     0,    33,    34,     0,     0,    37,
-       0,     0,     0,    39,     0,    40,     0,    41,    42,    43,
-=======
        1,     2,     3,     4,    17,     5,     6,     7,     8,     9,
       10,    11,    12,    13,    14,    15,    21,    18,    19,    20,
-      23,    24,    25,    26,    27,    28,    29,    30,    22,    31,
-      32,    33,    36,    38,     0,    34,    35,     0,     0,     0,
-      37,     0,     0,    39,     0,     0,    40,    41,    42,    43,
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
-       0,    44,    45,    46
+      23,    24,    25,    26,    27,    28,    29,    30,    31,    32,
+      33,    22,    34,    36,    38,     0,     0,     0,    35,    37,
+       0,     0,     0,     0,     0,    39,    40,    41,     0,     0,
+      42,    43,     0,    44,    45,    46
 };
 
 static const yytype_int8 yycheck[] =
 {
-<<<<<<< HEAD
-       3,     4,     5,     6,    20,     8,     9,    10,    11,    12,
-      13,    14,    15,    16,    17,     7,    20,     7,     7,     7,
-       7,     7,    20,    20,     7,     7,    18,     7,    20,     7,
-       0,     7,    11,     7,    -1,    20,    20,    -1,    -1,    20,
-      -1,    -1,    -1,    20,    -1,    20,    -1,    20,    20,    20,
-      -1,    20,    20,    20
-=======
-       3,     4,     5,     6,    19,     8,     9,    10,    11,    12,
-      13,    14,    15,    16,    17,    18,     7,    19,     7,     7,
-       7,     7,     7,    19,    19,     7,     7,     7,    19,     7,
-       7,     0,     7,     7,    -1,    19,    19,    -1,    -1,    -1,
-      19,    -1,    -1,    19,    -1,    -1,    19,    19,    19,    19,
-      -1,    19,    19,    19
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+       3,     4,     5,     6,    22,     8,     9,    10,    11,    12,
+      13,    14,    15,    16,    17,    18,     7,    22,     7,     7,
+       7,     7,     7,    22,    22,     7,     7,     7,     7,     7,
+       0,    22,    22,     7,     7,    -1,    -1,    -1,    22,    22,
+      -1,    -1,    -1,    -1,    -1,    22,    22,    22,    -1,    -1,
+      22,    22,    -1,    22,    22,    22
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -694,17 +585,10 @@ static const yytype_int8 yycheck[] =
 static const yytype_uint8 yystos[] =
 {
        0,     3,     4,     5,     6,     8,     9,    10,    11,    12,
-<<<<<<< HEAD
-      13,    14,    15,    16,    17,    23,    20,    20,     7,     7,
-       7,    18,    20,     7,     7,     7,    20,    20,     7,     7,
-       7,     7,     0,    20,    20,     7,    11,    20,     7,    20,
-      20,    20,    20,    20,    20,    20,    20
-=======
-      13,    14,    15,    16,    17,    18,    21,    19,    19,     7,
-       7,     7,    19,     7,     7,     7,    19,    19,     7,     7,
-       7,     7,     7,     0,    19,    19,     7,    19,     7,    19,
-      19,    19,    19,    19,    19,    19,    19
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+      13,    14,    15,    16,    17,    18,    24,    22,    22,     7,
+       7,     7,    22,     7,     7,     7,    22,    22,     7,     7,
+       7,     7,     7,     0,    22,    22,     7,    22,     7,    22,
+      22,    22,    22,    22,    22,    22,    22
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1519,156 +1403,88 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-<<<<<<< HEAD
-#line 41 "nutshparser.y"
-=======
-#line 40 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 44 "nutshparser.y"
     {exit(1); return 1; ;}
     break;
 
   case 3:
-<<<<<<< HEAD
-#line 42 "nutshparser.y"
-=======
-#line 41 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 45 "nutshparser.y"
     {printEnv(); return 1;;}
     break;
 
   case 4:
-<<<<<<< HEAD
-#line 43 "nutshparser.y"
-=======
-#line 42 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 46 "nutshparser.y"
     {runCD((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 5:
-<<<<<<< HEAD
-#line 44 "nutshparser.y"
-=======
-#line 43 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 47 "nutshparser.y"
     {alias(); return 1;;}
     break;
 
   case 6:
-<<<<<<< HEAD
-#line 45 "nutshparser.y"
-=======
-#line 44 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 48 "nutshparser.y"
     {runSetAlias((yyvsp[(2) - (4)].string), (yyvsp[(3) - (4)].string)); return 1;;}
     break;
 
   case 7:
-<<<<<<< HEAD
-#line 46 "nutshparser.y"
-=======
-#line 45 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 49 "nutshparser.y"
     {date(); return 1;;}
     break;
 
   case 8:
-<<<<<<< HEAD
-#line 47 "nutshparser.y"
-=======
-#line 46 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 50 "nutshparser.y"
     {unAlias((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 9:
-<<<<<<< HEAD
-#line 48 "nutshparser.y"
-=======
-#line 47 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 51 "nutshparser.y"
     {echo((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 10:
-<<<<<<< HEAD
-#line 49 "nutshparser.y"
-=======
-#line 48 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 52 "nutshparser.y"
     {setEnv((yyvsp[(2) - (4)].string), (yyvsp[(3) - (4)].string)); return 1;;}
     break;
 
   case 11:
-<<<<<<< HEAD
-#line 50 "nutshparser.y"
-=======
-#line 49 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 53 "nutshparser.y"
     {unSetEnv((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 12:
-<<<<<<< HEAD
-#line 51 "nutshparser.y"
-=======
-#line 50 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 54 "nutshparser.y"
     {touch((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 13:
-<<<<<<< HEAD
-#line 52 "nutshparser.y"
-=======
-#line 51 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 55 "nutshparser.y"
     {makedir((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 14:
-<<<<<<< HEAD
-#line 53 "nutshparser.y"
-=======
-#line 52 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 56 "nutshparser.y"
     {rm((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 15:
-<<<<<<< HEAD
-#line 54 "nutshparser.y"
-=======
-#line 53 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 57 "nutshparser.y"
     {removedir((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 16:
-<<<<<<< HEAD
-=======
-#line 54 "nutshparser.y"
+#line 58 "nutshparser.y"
     {cat((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 17:
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
-#line 55 "nutshparser.y"
-    {list(); return 1;;}
-    break;
-
-  case 17:
-#line 56 "nutshparser.y"
-    {pipeCommands((yyvsp[(1) - (4)].string), (yyvsp[(3) - (4)].string)); return 1;;}
+#line 59 "nutshparser.y"
+    {breakUpPathAndSearch("ls"); return 1;;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-<<<<<<< HEAD
-#line 1481 "nutshparser.tab.c"
-=======
-#line 1476 "nutshparser.tab.c"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 1488 "nutshparser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1882,11 +1698,7 @@ yyreturn:
 }
 
 
-<<<<<<< HEAD
-#line 62 "nutshparser.y"
-=======
-#line 57 "nutshparser.y"
->>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
+#line 61 "nutshparser.y"
 
 
 int yyerror(char *s) {
@@ -2184,6 +1996,8 @@ int cat(char* filename) {
 	return 1;
 }
 
+// This function probably needs to be implemented in nutshell.c once the command table
+// is filled with cmds args flags pipes etc. and ready to be executed using execve()
 int pipeCommands(char *cmd1, char *cmd2) {
 	int fd[2];
 	if (pipe(fd) == -1) {
@@ -2223,5 +2037,58 @@ int pipeCommands(char *cmd1, char *cmd2) {
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
 	return 1;
+}
+
+char* breakUpPathAndSearch(char *cmdName) {
+	char *ret = cmdName;
+	char *pathVar;
+	strcpy(pathVar, varTable.word[3]);
+	pathVar = strtok(pathVar, ":");
+	while (pathVar != NULL) {
+		ret = searchPath(pathVar, 0, cmdName);
+		if (ret != cmdName)
+			break;
+		pathVar = strtok(NULL, ":");
+	}
+	
+	if (ret == cmdName)
+		printf("Couldn't find %s\n", cmdName);
+	else {
+		printf("Found %s in %s\n", cmdName, ret);
+	}
+	
+	return ret;
+}
+
+char* searchPath(char *basePath, const int root, char *cmdName)
+{
+	char *ret = cmdName;
+    char path[1000];
+    struct dirent *dp;
+    DIR *dir = opendir(basePath);
+
+    if (!dir) {
+		return ret;
+	}
+
+    while ((dp = readdir(dir)) != NULL)
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
+        {
+            strcpy(path, basePath);
+            strcat(path, "/");
+            strcat(path, dp->d_name);
+
+			if (strcmp(dp->d_name, cmdName) == 0) {
+				ret = path;
+				break;
+			}
+
+            ret = searchPath(path, root + 2, cmdName);
+        }
+    }
+
+    closedir(dir);
+	return ret;
 }
 
