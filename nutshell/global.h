@@ -11,9 +11,15 @@ struct aTable {
 	char word[128][100];
 };
 
-struct cTable {
-   char cmd[128][100];
-   char arg[128][100];
+struct pipeline {
+   struct command cmdList[20];
+   bool background;
+};
+struct command {
+   char *name;
+   char args[128][100];
+   char *input;
+   char *output;
 };
 
 char cwd[PATH_MAX];
@@ -22,8 +28,8 @@ struct evTable varTable;
 
 struct aTable aliasTable;
 
-struct cTable cmdTable;
+struct pipeline cmdTable;
 
-int aliasIndex, varIndex, cmdIndex;
+int aliasIndex, varIndex, cmdListIndex;
 
 char* subAliases(char* name);
