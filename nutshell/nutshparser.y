@@ -10,6 +10,7 @@
 #include <dirent.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 
 int yylex(void);
 int yyerror(char *s);
@@ -27,12 +28,15 @@ int touch(char *filename);
 int makedir(char *path);
 int rm(char *filename);
 int removedir(char *path);
+int pipeCommands(char *cmd1, char *cmd2);
+char* breakUpPathAndSearch(char *cmdName);
+char* searchPath(char *basePath, const int root, char *cmdName);
 %}
 
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE TOUCH MKDIR RM RMDIR END 
+%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE TOUCH MKDIR RM RMDIR PIPE REDIRECT RUNSILENTLY END 
 
 %%
 cmd_line    :
@@ -308,4 +312,104 @@ int removedir(char* path) {
 	status = rmdir(path);
 
 	return 1;
+}
+
+// This function probably needs to be implemented in nutshell.c once the command table
+// is filled with cmds args flags pipes etc. and ready to be executed using execve()
+int pipeCommands(char *cmd1, char *cmd2) {
+	int fd[2];
+	if (pipe(fd) == -1) {
+		printf("ERROR 1\n");
+		return 1;
+	}
+
+	int pid1 = fork();
+	if (pid1 < 0) {
+		printf("ERROR 2\n");
+		return 1;
+	}
+
+	if (pid1 == 0) {
+		dup2(fd[1], STDOUT_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		execv(cmd1, NULL);
+	}
+
+	int pid2 = fork();
+	if (pid2 < 0) {
+		printf("ERROR 3\n");
+		return 1;
+	}
+
+	if (pid2 == 0) {
+		dup2(fd[0], STDIN_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		execv(cmd2, NULL);
+	}
+
+	close(fd[0]);
+	close(fd[1]);
+
+	waitpid(pid1, NULL, 0);
+	waitpid(pid2, NULL, 0);
+	return 1;
+}
+
+char* breakUpPathAndSearch(char *cmdName) {
+	char *ret = cmdName;
+	char *pathVar = varTable.word[3];
+	char *diffPaths = strtok(pathVar, ":");
+	while (diffPaths != NULL) {
+		ret = searchPath(diffPaths, 0, cmdName);
+		if (ret != cmdName)
+			break;
+		diffPaths = strtok(NULL, ":");
+	}
+	
+	if (ret == cmdName)
+		printf("couldn't find %s in path\n", cmdName);
+	else {
+		printf("found %s in %s\n", cmdName, ret);
+	}
+	
+	return ret;
+}
+
+char* searchPath(char *basePath, const int root, char *cmdName)
+{
+	char *ret = cmdName;
+    char path[1000];
+    struct dirent *dp;
+    DIR *dir = opendir(basePath);
+
+    if (!dir) {
+		return ret;
+	}
+
+    while ((dp = readdir(dir)) != NULL)
+    {
+        if (strcmp(dp->d_name, ".") != 0 && strcmp(dp->d_name, "..") != 0)
+        {
+			printf("%s\n", dp->d_name);
+			if (strcmp(dp->d_name, cmdName) == 0) {
+				printf("\nFOUND IT!\n");
+				strcpy(path, basePath);
+            	strcat(path, "/");
+            	strcat(path, dp->d_name);
+				printf("path=%s\n", path);
+				ret = path;
+				break;
+			}
+			
+            strcpy(path, basePath);
+            strcat(path, "/");
+            strcat(path, dp->d_name);
+            ret = searchPath(path, root + 2, cmdName);
+        }
+    }
+
+    closedir(dir);
+	return ret;
 }
