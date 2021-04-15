@@ -28,6 +28,7 @@ int touch(char *filename);
 int makedir(char *path);
 int rm(char *filename);
 int removedir(char *path);
+int cat(char *filename);
 int pipeCommands(char *cmd1, char *cmd2);
 char* breakUpPathAndSearch(char *cmdName);
 char* searchPath(char *basePath, const int root, char *cmdName);
@@ -36,7 +37,7 @@ char* searchPath(char *basePath, const int root, char *cmdName);
 %union {char *string;}
 
 %start cmd_line
-%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE TOUCH MKDIR RM RMDIR PIPE REDIRECT RUNSILENTLY END 
+%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE TOUCH MKDIR RM RMDIR CAT PIPE REDIRECT RUNSILENTLY END 
 
 %%
 cmd_line    :
@@ -54,6 +55,7 @@ cmd_line    :
 	| MKDIR STRING END 				{makedir($2); return 1;}
 	| RM STRING END 				{rm($2); return 1;}
 	| RMDIR STRING END 				{removedir($2); return 1;}
+	| CAT STRING END 				{cat($2); return 1;}
 	| LS END						{list(); return 1;}
 
 %%
@@ -292,6 +294,7 @@ int rm(char* filename) {
 
 	if(!filePtr) {
 		printf("File does not exist. \n");
+		return 1;
 	}
 
 	fclose(filePtr);
@@ -310,6 +313,44 @@ int removedir(char* path) {
 	int status;
 
 	status = rmdir(path);
+
+	if(status == 0) {
+		printf("Directory deleted.");
+	} else {
+		printf("Unable to delete directory.");
+	}
+
+	return 1;
+}
+
+int cat(char* filename) {
+
+
+	FILE *filePtr = NULL;
+	filePtr = fopen(filename, "r");
+
+	if(!filePtr) {
+		printf("File does not exist. \n");
+		return 1;
+	}
+
+	int linecounter = 1;
+
+	char buff[PATH_MAX];
+
+	while(fgets (buff, sizeof buff, filePtr)) {
+		if(linecounter == 1){
+			printf(buff);
+		} else {
+			printf("%s", buff);
+		}
+		linecounter ++;
+	}
+
+	printf("\n");
+
+
+	fclose(filePtr);
 
 	return 1;
 }

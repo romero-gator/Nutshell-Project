@@ -54,9 +54,14 @@
      MKDIR = 270,
      RM = 271,
      RMDIR = 272,
+<<<<<<< HEAD
      PIPE = 273,
      IOREDIRECT = 274,
      END = 275
+=======
+     CAT = 273,
+     END = 274
+>>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
    };
 #endif
 /* Tokens.  */
@@ -75,19 +80,31 @@
 #define MKDIR 270
 #define RM 271
 #define RMDIR 272
+<<<<<<< HEAD
 #define PIPE 273
 #define IOREDIRECT 274
 #define END 275
+=======
+#define CAT 273
+#define END 274
+>>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
+<<<<<<< HEAD
 #line 34 "nutshparser.y"
 {char *string;}
 /* Line 1529 of yacc.c.  */
 #line 91 "nutshparser.tab.h"
+=======
+#line 33 "nutshparser.y"
+{char *string;}
+/* Line 1529 of yacc.c.  */
+#line 89 "nutshparser.tab.h"
+>>>>>>> b06c78e87c6e51b9f382123c3a50b848e8ddc89f
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
