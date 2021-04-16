@@ -53,11 +53,27 @@ input    :
 	;
 
 line	:
-	LSCMD END				{seeCmd(); return 1;}
-	| RUN END				{runCmds(); return 1;}
-	| NOLL END				{runNull(); return 1;}
-	| END					{ return 1;}				
-	| stmt END				{ return 1;}	
+	END								{return 1;}
+	| BYE END 		            	{exit(1); return 1; }
+	| PRINTENV END					{printEnv(); return 1;}
+	| CD STRING END        			{runCD($2); return 1;}
+	| ALIAS END						{alias(); return 1;}
+	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
+	| DATE END						{date(); return 1;}
+	| UNALIAS STRING END			{unAlias($2); return 1;}
+	| ECHO STRING END				{echo($2); return 1;}
+	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
+	| UNSETENV STRING END			{unSetEnv($2); return 1;}
+	| TOUCH STRING END 				{touch($2); return 1;}
+	| MKDIR STRING END 				{makedir($2); return 1;}
+	| RM STRING END 				{rm($2); return 1;}
+	| RMDIR STRING END 				{removedir($2); return 1;}
+	| CAT STRING END 				{cat($2); return 1;}
+	| LS END						{list(); return 1;}
+	| LSCMD END						{seeCmd(); return 1;}
+	| RUN END						{runCmds(); return 1;}
+	| NOLL END						{runNull(); return 1;}				
+	| stmt END						{ return 1;}	
 	;
 
 stmt	:

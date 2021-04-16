@@ -365,8 +365,8 @@ static void yy_fatal_error (yyconst char msg[]  );
 	yy_flex_strncpy( yytext, (yytext_ptr), yyleng + 1 ); \
 	(yy_c_buf_p) = yy_cp;
 
-#define YY_NUM_RULES 29
-#define YY_END_OF_BUFFER 30
+#define YY_NUM_RULES 28
+#define YY_END_OF_BUFFER 29
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -376,15 +376,15 @@ struct yy_trans_info
 	};
 static yyconst flex_int16_t yy_accept[94] =
     {   0,
-        0,    0,    0,    0,    0,    0,   30,   29,   24,    5,
-       28,   27,   26,   21,   28,   23,   23,   28,   28,   28,
-       28,   28,   28,   28,   28,   28,   28,   28,   28,   22,
-        1,    2,    3,    4,   28,   23,   23,   28,   28,   28,
-       10,   28,   28,   20,   28,   28,   15,   28,   28,   28,
-        1,    3,    0,   28,    6,   19,   28,   28,   28,   28,
-       28,   28,   28,   28,   28,   28,   18,   17,   28,   28,
-       28,   28,   28,   28,   28,   11,   14,   28,   16,   28,
-       13,   28,   28,   28,    8,   28,   28,   28,   12,   28,
+        0,    0,    0,    0,    0,    0,   29,   28,   24,    5,
+       27,   26,   25,   21,   27,   23,   23,   27,   27,   27,
+       27,   27,   27,   27,   27,   27,   27,   27,   27,   22,
+        1,    2,    3,    4,   27,   23,   23,   27,   27,   27,
+       10,   27,   27,   20,   27,   27,   15,   27,   27,   27,
+        1,    3,    0,   27,    6,   19,   27,   27,   27,   27,
+       27,   27,   27,   27,   27,   27,   18,   17,   27,   27,
+       27,   27,   27,   27,   27,   11,   14,   27,   16,   27,
+       13,   27,   27,   27,    8,   27,   27,   27,   12,   27,
         7,    9,    0
 
     } ;
@@ -999,21 +999,16 @@ YY_RULE_SETUP
 case 25:
 YY_RULE_SETUP
 #line 106 "nutshscanner.l"
-{ return PIPE; }
+{ BEGIN(expansion_condition); }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
 #line 107 "nutshscanner.l"
-{ BEGIN(expansion_condition); }
+{ BEGIN(string_condition); }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 108 "nutshscanner.l"
-{ BEGIN(string_condition); }
-	YY_BREAK
-case 28:
-YY_RULE_SETUP
-#line 109 "nutshscanner.l"
 {   if(isUnalias) {
                                 setUnAlias();
                                 yylval.string = strdup(yytext);
@@ -1034,12 +1029,12 @@ YY_RULE_SETUP
                             };
                         }
 	YY_BREAK
-case 29:
+case 28:
 YY_RULE_SETUP
-#line 128 "nutshscanner.l"
+#line 127 "nutshscanner.l"
 ECHO;
 	YY_BREAK
-#line 1043 "lex.yy.c"
+#line 1038 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(string_condition):
 case YY_STATE_EOF(expansion_condition):
@@ -2038,6 +2033,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 128 "nutshscanner.l"
+#line 127 "nutshscanner.l"
 
 

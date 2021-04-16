@@ -58,7 +58,10 @@
      PIPE = 274,
      REDIRECT = 275,
      RUNSILENTLY = 276,
-     END = 277
+     LSCMD = 277,
+     RUN = 278,
+     NOLL = 279,
+     END = 280
    };
 #endif
 /* Tokens.  */
@@ -81,17 +84,22 @@
 #define PIPE 274
 #define REDIRECT 275
 #define RUNSILENTLY 276
-#define END 277
+#define LSCMD 277
+#define RUN 278
+#define NOLL 279
+#define END 280
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 37 "nutshparser.y"
-{char *string;}
+#line 43 "nutshparser.y"
+{
+	char *string;
+}
 /* Line 1529 of yacc.c.  */
-#line 95 "nutshparser.tab.h"
+#line 103 "nutshparser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
