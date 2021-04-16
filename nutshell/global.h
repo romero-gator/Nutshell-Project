@@ -11,16 +11,16 @@ struct aTable {
 	char word[128][100];
 };
 
+struct command {
+   char name[15];
+   char args[10][10];
+   int argIndex;
+};
 struct pipeline {
-   struct command cmdList[20];
+   struct command cmdList[5];
    bool background;
 };
-struct command {
-   char *name;
-   char args[128][100];
-   char *input;
-   char *output;
-};
+
 
 char cwd[PATH_MAX];
 

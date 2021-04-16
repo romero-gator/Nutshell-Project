@@ -32,31 +32,44 @@ int cat(char *filename);
 int pipeCommands(char *cmd1, char *cmd2);
 char* breakUpPathAndSearch(char *cmdName);
 char* searchPath(char *basePath, const int root, char *cmdName);
+int putCmdInTable(char *name);
+int putArgsInTable(char *name);
+int runCmds();
+int checkBuiltIn(char* name);
+int seeCmd();
+int runNull();
 %}
 
-%union {char *string;}
-
-%start cmd_line
-%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE TOUCH MKDIR RM RMDIR CAT PIPE REDIRECT RUNSILENTLY END 
+%union {
+	char *string;
+}
+%type <string> line word stmt
+%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE TOUCH MKDIR RM RMDIR CAT PIPE REDIRECT RUNSILENTLY LSCMD RUN NOLL END
 
 %%
-cmd_line    :
-	BYE END 		            	{exit(1); return 1; }
-	| PRINTENV END					{printEnv(); return 1;}
-	| CD STRING END        			{runCD($2); return 1;}
-	| ALIAS END						{alias(); return 1;}
-	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
-	| DATE END						{date(); return 1;}
-	| UNALIAS STRING END			{unAlias($2); return 1;}
-	| ECHO STRING END				{echo($2); return 1;}
-	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
-	| UNSETENV STRING END			{unSetEnv($2); return 1;}
-	| TOUCH STRING END 				{touch($2); return 1;}
-	| MKDIR STRING END 				{makedir($2); return 1;}
-	| RM STRING END 				{rm($2); return 1;}
-	| RMDIR STRING END 				{removedir($2); return 1;}
-	| CAT STRING END 				{cat($2); return 1;}
-	| LS END						{list(); return 1;}
+input    :
+	/* empty */
+	| input line	
+	;
+
+line	:
+	LSCMD END				{seeCmd(); return 1;}
+	| RUN END				{runCmds(); return 1;}
+	| NOLL END				{runNull(); return 1;}
+	| END					{ return 1;}				
+	| stmt END				{ return 1;}	
+	;
+
+stmt	:
+	word
+	| stmt RUNSILENTLY		{printf("RUN IN BACKGROUND\n")}
+	| stmt PIPE stmt		{printf("PIPE COMMANDS\n");}
+	| stmt REDIRECT stmt	{printf("REDIRECT IO\n");}
+
+word	:
+	STRING 					{ putCmdInTable($1); }
+	| word STRING 			{ putArgsInTable($2); }
+	;
 
 %%
 
@@ -437,7 +450,6 @@ char* searchPath(char *basePath, const int root, char *cmdName)
             strcpy(path, basePath);
             strcat(path, "/");
             strcat(path, dp->d_name);
-
 			if (strcmp(dp->d_name, cmdName) == 0) {
 				ret = path;
 				break;
@@ -449,4 +461,93 @@ char* searchPath(char *basePath, const int root, char *cmdName)
 
     closedir(dir);
 	return ret;
+}
+
+int putArgsInTable(char* name) {
+	strcpy(cmdTable.cmdList[cmdListIndex - 1].args[cmdTable.cmdList[cmdListIndex - 1].argIndex], name);
+	cmdTable.cmdList[cmdListIndex - 1].argIndex++;
+	return 1;
+}
+
+int putCmdInTable(char *name) {
+	strcpy(cmdTable.cmdList[cmdListIndex].name, name);
+	cmdListIndex++;
+	return 1;
+}
+
+int runCmds() {
+	
+	for (int i = 0; i < cmdListIndex; i++) {
+		printf("trying to run %s...\n", cmdTable.cmdList[i].name); 
+		char* pathVar = breakUpPathAndSearch(cmdTable.cmdList[i].name);
+		if (strcmp(pathVar, cmdTable.cmdList[i].name) != 0) {
+			int pid1 = fork();
+			printf("PID: %d \n", pid1);
+			if (pid1 < 0) {
+				printf("ERROR piping (2)\n");
+				return 1;
+			}
+			if (pid1 == 0) {
+				printf("...");
+				char* path = malloc(strlen("/bin/") + strlen(cmdTable.cmdList[i].name) + 1);
+
+				//MAKE PATH NAME
+				strcpy(path, "/bin/");
+				strcat(path, cmdTable.cmdList[i].name);
+
+
+
+				//MAKE CHARACTER ARRAY
+				char* arg[cmdTable.cmdList[i].argIndex+2]; //array of args
+				arg[0] = cmdTable.cmdList[i].name; //first arg is function name 
+				for(int j = 1; j< cmdTable.cmdList[i].argIndex+1; j++){
+					arg[j] = cmdTable.cmdList[i].args[j-1]; 			
+					
+				}
+
+				//SET LAST ONE TO NULL
+				arg[cmdTable.cmdList[i].argIndex+1] = NULL;
+
+				//RUN EXECV
+				int status = execv(path, arg);
+				free(path);
+				printf("executed (%d).\n", status);			
+			}
+			waitpid(pid1, NULL, 0);
+
+		}
+		
+	}
+
+	 cmdListIndex = 0;//reset once everything run
+	
+	return 1;
+}
+
+int checkBuiltIn(char* name) {
+	return 1;
+}
+
+int seeCmd(){
+
+	for(int i = 0; i<cmdListIndex; i++){
+        printf("Command: %s  Args: ", cmdTable.cmdList[i].name);
+        for(int j = 0; j<cmdTable.cmdList[i].argIndex; j++){
+            printf("  %s  ", cmdTable.cmdList[i].args[j]);
+        }
+        printf("\n");
+    }
+
+    return 1;
+}
+
+int runNull(){
+
+	for(int i = 0; i<cmdListIndex; i++){
+       
+        //cmdTable.cmdList[cmdListIndex - 1].args[cmdTable.cmdList[cmdListIndex - 1].argIndex][0] = NULL;
+        cmdListIndex++;
+    }
+
+    return 1;
 }

@@ -103,7 +103,6 @@ ls                      { return LS; }
 \|                      { return PIPE; }
 \>|\<|\>\>|2\>|2\>&1    { return REDIRECT; }
 "\n"		            { return END; }
-\|                      { return PIPE; }
 [$\{]                   { BEGIN(expansion_condition); }
 [\"]                    { BEGIN(string_condition); }
 {CHAR}+                 {   if(isUnalias) {

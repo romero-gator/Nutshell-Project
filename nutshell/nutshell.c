@@ -14,6 +14,7 @@ int main()
 {
     aliasIndex = 0;
     varIndex = 0;
+    cmdListIndex = 0;
 
     getcwd(cwd, sizeof(cwd));
 
