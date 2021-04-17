@@ -66,55 +66,37 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     BYE = 258,
-     PRINTENV = 259,
-     UNSETENV = 260,
-     CD = 261,
-     STRING = 262,
-     ALIAS = 263,
-     UNALIAS = 264,
-     SETENV = 265,
-     ECHO = 266,
-     LS = 267,
-     DATE = 268,
-     TOUCH = 269,
-     MKDIR = 270,
-     RM = 271,
-     RMDIR = 272,
-     CAT = 273,
-     PIPE = 274,
-     REDIRECT = 275,
-     RUNSILENTLY = 276,
-     LSCMD = 277,
-     RUN = 278,
-     NOLL = 279,
-     END = 280
+     STRING = 258,
+     PIPE = 259,
+     ALIAS = 260,
+     UNALIAS = 261,
+     SETENV = 262,
+     REDIRECT = 263,
+     RUNSILENTLY = 264,
+     LSCMD = 265,
+     PRINTENV = 266,
+     UNSETENV = 267,
+     RUN = 268,
+     CD = 269,
+     BYE = 270,
+     END = 271
    };
 #endif
 /* Tokens.  */
-#define BYE 258
-#define PRINTENV 259
-#define UNSETENV 260
-#define CD 261
-#define STRING 262
-#define ALIAS 263
-#define UNALIAS 264
-#define SETENV 265
-#define ECHO 266
-#define LS 267
-#define DATE 268
-#define TOUCH 269
-#define MKDIR 270
-#define RM 271
-#define RMDIR 272
-#define CAT 273
-#define PIPE 274
-#define REDIRECT 275
-#define RUNSILENTLY 276
-#define LSCMD 277
-#define RUN 278
-#define NOLL 279
-#define END 280
+#define STRING 258
+#define PIPE 259
+#define ALIAS 260
+#define UNALIAS 261
+#define SETENV 262
+#define REDIRECT 263
+#define RUNSILENTLY 264
+#define LSCMD 265
+#define PRINTENV 266
+#define UNSETENV 267
+#define RUN 268
+#define CD 269
+#define BYE 270
+#define END 271
 
 
 
@@ -137,6 +119,14 @@
 
 int yylex(void);
 int yyerror(char *s);
+char* breakUpPathAndSearch(char *cmdName);
+char* searchPath(char *basePath, const int root, char *cmdName);
+int pipeCommands(char *cmd1, char *cmd2);
+int putCmdInTable(char *name);
+int putArgsInTable(char *name);
+int runCmds();
+int checkBuiltIn(char* name);
+int seeCmd();
 int runCD(char* arg);
 int runSetAlias(char *name, char *word);
 int printEnv();
@@ -144,23 +134,6 @@ int alias();
 int setEnv(char *var, char *word);
 int unSetEnv(char *var);
 int unAlias(char *var);
-int echo(char *word);
-int list();
-int date();
-int touch(char *filename);
-int makedir(char *path);
-int rm(char *filename);
-int removedir(char *path);
-int cat(char *filename);
-int pipeCommands(char *cmd1, char *cmd2);
-char* breakUpPathAndSearch(char *cmdName);
-char* searchPath(char *basePath, const int root, char *cmdName);
-int putCmdInTable(char *name);
-int putArgsInTable(char *name);
-int runCmds();
-int checkBuiltIn(char* name);
-int seeCmd();
-int runNull();
 
 
 /* Enabling traces.  */
@@ -183,12 +156,12 @@ int runNull();
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 43 "nutshparser.y"
+#line 34 "nutshparser.y"
 {
 	char *string;
 }
 /* Line 193 of yacc.c.  */
-#line 192 "nutshparser.tab.c"
+#line 165 "nutshparser.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -201,7 +174,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 205 "nutshparser.tab.c"
+#line 178 "nutshparser.tab.c"
 
 #ifdef short
 # undef short
@@ -416,20 +389,20 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   25
+#define YYLAST   39
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  26
+#define YYNTOKENS  17
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  5
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  14
+#define YYNRULES  21
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  21
+#define YYNSTATES  41
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   280
+#define YYMAXUTOK   271
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -464,8 +437,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
-      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
-      25
+      15,    16
 };
 
 #if YYDEBUG
@@ -473,24 +445,29 @@ static const yytype_uint8 yytranslate[] =
    YYRHS.  */
 static const yytype_uint8 yyprhs[] =
 {
-       0,     0,     3,     4,     7,    10,    13,    16,    18,    21,
-      23,    26,    30,    34,    36
+       0,     0,     3,     4,     7,    10,    13,    18,    21,    25,
+      28,    33,    37,    40,    44,    46,    49,    51,    54,    58,
+      62,    64
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int8 yyrhs[] =
 {
-      27,     0,    -1,    -1,    27,    28,    -1,    22,    25,    -1,
-      23,    25,    -1,    24,    25,    -1,    25,    -1,    29,    25,
-      -1,    30,    -1,    29,    21,    -1,    29,    19,    29,    -1,
-      29,    20,    29,    -1,     7,    -1,    30,     7,    -1
+      18,     0,    -1,    -1,    18,    19,    -1,    10,    16,    -1,
+      13,    16,    -1,     7,     3,     3,    16,    -1,    11,    16,
+      -1,    12,     3,    16,    -1,     5,    16,    -1,     5,     3,
+       3,    16,    -1,     6,     3,    16,    -1,    15,    16,    -1,
+      14,     3,    16,    -1,    16,    -1,    20,    16,    -1,    21,
+      -1,    20,     9,    -1,    20,     4,    20,    -1,    20,     8,
+      20,    -1,     3,    -1,    21,     3,    -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    50,    50,    52,    56,    57,    58,    59,    60,    64,
-      65,    66,    67,    70,    71
+       0,    41,    41,    43,    47,    48,    49,    50,    51,    52,
+      53,    54,    55,    56,    57,    58,    62,    63,    64,    65,
+      68,    69
 };
 #endif
 
@@ -499,11 +476,9 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "BYE", "PRINTENV", "UNSETENV", "CD",
-  "STRING", "ALIAS", "UNALIAS", "SETENV", "ECHO", "LS", "DATE", "TOUCH",
-  "MKDIR", "RM", "RMDIR", "CAT", "PIPE", "REDIRECT", "RUNSILENTLY",
-  "LSCMD", "RUN", "NOLL", "END", "$accept", "input", "line", "stmt",
-  "word", 0
+  "$end", "error", "$undefined", "STRING", "PIPE", "ALIAS", "UNALIAS",
+  "SETENV", "REDIRECT", "RUNSILENTLY", "LSCMD", "PRINTENV", "UNSETENV",
+  "RUN", "CD", "BYE", "END", "$accept", "input", "line", "stmt", "word", 0
 };
 #endif
 
@@ -513,23 +488,24 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,   269,   270,   271,   272,   273,   274,
-     275,   276,   277,   278,   279,   280
+     265,   266,   267,   268,   269,   270,   271
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,    26,    27,    27,    28,    28,    28,    28,    28,    29,
-      29,    29,    29,    30,    30
+       0,    17,    18,    18,    19,    19,    19,    19,    19,    19,
+      19,    19,    19,    19,    19,    19,    20,    20,    20,    20,
+      21,    21
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
 static const yytype_uint8 yyr2[] =
 {
-       0,     2,     0,     2,     2,     2,     2,     1,     2,     1,
-       2,     3,     3,     1,     2
+       0,     2,     0,     2,     2,     2,     4,     2,     3,     2,
+       4,     3,     2,     3,     1,     2,     1,     2,     3,     3,
+       1,     2
 };
 
 /* YYDEFACT[STATE-NAME] -- Default rule to reduce with in state
@@ -537,31 +513,35 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       2,     0,     1,    13,     0,     0,     0,     7,     3,     0,
-       9,     4,     5,     6,     0,     0,    10,     8,    14,    11,
-      12
+       2,     0,     1,    20,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    14,     3,     0,    16,     0,     9,     0,
+       0,     4,     7,     0,     5,     0,    12,     0,     0,    17,
+      15,    21,     0,    11,     0,     8,    13,    18,    19,    10,
+       6
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     1,     8,     9,    10
+      -1,     1,    14,    15,    16
 };
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -25
+#define YYPACT_NINF -27
 static const yytype_int8 yypact[] =
 {
-     -25,     0,   -25,   -25,   -24,   -13,   -12,   -25,   -25,   -17,
-       7,   -25,   -25,   -25,     8,     8,   -25,   -25,   -25,   -10,
-     -10
+     -27,     0,   -27,   -27,     1,     5,     6,     3,    10,    18,
+      11,    25,    13,   -27,   -27,    14,    28,    29,   -27,    17,
+      31,   -27,   -27,    19,   -27,    20,   -27,    34,    34,   -27,
+     -27,   -27,    22,   -27,    23,   -27,   -27,    16,    16,   -27,
+     -27
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -25,   -25,   -25,    -9,   -25
+     -27,   -27,   -27,   -26,   -27
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -571,25 +551,29 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       2,    11,    14,    15,    16,    19,    20,     3,    17,    14,
-      15,    16,    12,    13,    18,     3,     0,     0,     0,     0,
-       0,     0,     4,     5,     6,     7
+       2,    37,    38,     3,    17,     4,     5,     6,    19,    20,
+       7,     8,     9,    10,    11,    12,    13,    18,    27,    21,
+      27,    23,    28,    29,    28,    29,    22,    24,    25,    26,
+      30,    31,    32,    33,    34,    35,    36,     3,    39,    40
 };
 
-static const yytype_int8 yycheck[] =
+static const yytype_uint8 yycheck[] =
 {
-       0,    25,    19,    20,    21,    14,    15,     7,    25,    19,
-      20,    21,    25,    25,     7,     7,    -1,    -1,    -1,    -1,
-      -1,    -1,    22,    23,    24,    25
+       0,    27,    28,     3,     3,     5,     6,     7,     3,     3,
+      10,    11,    12,    13,    14,    15,    16,    16,     4,    16,
+       4,     3,     8,     9,     8,     9,    16,    16,     3,    16,
+      16,     3,     3,    16,     3,    16,    16,     3,    16,    16
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,    27,     0,     7,    22,    23,    24,    25,    28,    29,
-      30,    25,    25,    25,    19,    20,    21,    25,     7,    29,
-      29
+       0,    18,     0,     3,     5,     6,     7,    10,    11,    12,
+      13,    14,    15,    16,    19,    20,    21,     3,    16,     3,
+       3,    16,    16,     3,    16,     3,    16,     4,     8,     9,
+      16,     3,     3,    16,     3,    16,    16,    20,    20,    16,
+      16
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1404,58 +1388,93 @@ yyreduce:
   switch (yyn)
     {
         case 4:
-#line 56 "nutshparser.y"
+#line 47 "nutshparser.y"
     {seeCmd(); return 1;;}
     break;
 
   case 5:
-#line 57 "nutshparser.y"
+#line 48 "nutshparser.y"
     {runCmds(); return 1;;}
     break;
 
   case 6:
-#line 58 "nutshparser.y"
-    {runNull(); return 1;;}
+#line 49 "nutshparser.y"
+    {setEnv((yyvsp[(2) - (4)].string), (yyvsp[(3) - (4)].string)); return 1;;}
     break;
 
   case 7:
-#line 59 "nutshparser.y"
-    { return 1;;}
+#line 50 "nutshparser.y"
+    {printEnv(); return 1;;}
     break;
 
   case 8:
-#line 60 "nutshparser.y"
-    { return 1;;}
+#line 51 "nutshparser.y"
+    {unSetEnv((yyvsp[(2) - (3)].string)); return 1;;}
+    break;
+
+  case 9:
+#line 52 "nutshparser.y"
+    {alias(); return 1;;}
     break;
 
   case 10:
-#line 65 "nutshparser.y"
-    {printf("RUN IN BACKGROUND\n");}
+#line 53 "nutshparser.y"
+    {runSetAlias((yyvsp[(2) - (4)].string), (yyvsp[(3) - (4)].string)); return 1;;}
     break;
 
   case 11:
-#line 66 "nutshparser.y"
-    {printf("PIPE COMMANDS\n");;}
+#line 54 "nutshparser.y"
+    {unAlias((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 12:
-#line 67 "nutshparser.y"
-    {printf("REDIRECT IO\n");;}
+#line 55 "nutshparser.y"
+    {exit(1); return 1;;}
     break;
 
   case 13:
-#line 70 "nutshparser.y"
-    { putCmdInTable((yyvsp[(1) - (1)].string)); ;}
+#line 56 "nutshparser.y"
+    {runCD((yyvsp[(2) - (3)].string)); return 1;;}
     break;
 
   case 14:
-#line 71 "nutshparser.y"
+#line 57 "nutshparser.y"
+    { return 1;;}
+    break;
+
+  case 15:
+#line 58 "nutshparser.y"
+    { runCmds(); return 1;;}
+    break;
+
+  case 17:
+#line 63 "nutshparser.y"
+    {printf("RUN IN BACKGROUND\n");}
+    break;
+
+  case 18:
+#line 64 "nutshparser.y"
+    {printf("PIPE COMMANDS\n");;}
+    break;
+
+  case 19:
+#line 65 "nutshparser.y"
+    {printf("REDIRECT IO\n");;}
+    break;
+
+  case 20:
+#line 68 "nutshparser.y"
+    { putCmdInTable((yyvsp[(1) - (1)].string)); ;}
+    break;
+
+  case 21:
+#line 69 "nutshparser.y"
     { putArgsInTable((yyvsp[(2) - (2)].string)); ;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1459 "nutshparser.tab.c"
+#line 1478 "nutshparser.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1669,7 +1688,7 @@ yyreturn:
 }
 
 
-#line 74 "nutshparser.y"
+#line 72 "nutshparser.y"
 
 
 int yyerror(char *s) {
@@ -1699,13 +1718,12 @@ int runCD(char* arg) {
 		}
 		else {
 			printf("Directory not found\n");
-                       	return 1;
+            return 1;
 		}
 	}
 }
 
 int runSetAlias(char *name, char *word) {
-	printf("\n");
 	for (int i = 0; i < aliasIndex; i++) {
 		if(strcmp(name, word) == 0){
 			printf("Error, expansion of \"%s\" would create a loop.\n", name);
@@ -1850,123 +1868,6 @@ int unAlias(char *name) {
 
 }
 
-int echo(char* word) {
-	printf(word);
-	printf("\n");
-	return 1;
-}
-
-int list() {
-	DIR *dir;
-    struct dirent *de;
-
-    dir = opendir(".");
-    while(dir)
-    {
-        de = readdir(dir);
-        if (!de) break;
-        printf("%s\n", de->d_name);
-    }
-
-    closedir(dir);
-	return 1;
-}
-
-int date() {
-	time_t rawtime;
-  	struct tm * timeinfo;
-
-  	time( &rawtime );
-  	timeinfo = localtime ( &rawtime );
-  	printf("Time and date: %s", asctime(timeinfo));
-	return 1;
-}
-
-int touch(char* filename) {
-	FILE *filePtr = NULL;
-	filePtr = fopen(filename, "a");
-
-	return 1;
-}
-
-int makedir(char* path) {
-	int status;
-
-	status = mkdir(path, 0777);
-
-	return 1;
-}
-
-int rm(char* filename) {
-
-	int success;
-
-	FILE *filePtr = NULL;
-	filePtr = fopen(filename, "w");
-
-	if(!filePtr) {
-		printf("File does not exist. \n");
-		return 1;
-	}
-
-	fclose(filePtr);
-	success = remove(filename);
-
-	if(success == 0){
-		printf("File deleted.");
-	} else {
-		printf("Unable to delete file.");
-	}
-
-	return 1;
-}
-
-int removedir(char* path) {
-	int status;
-
-	status = rmdir(path);
-
-	if(status == 0) {
-		printf("Directory deleted.");
-	} else {
-		printf("Unable to delete directory.");
-	}
-
-	return 1;
-}
-
-int cat(char* filename) {
-
-
-	FILE *filePtr = NULL;
-	filePtr = fopen(filename, "r");
-
-	if(!filePtr) {
-		printf("File does not exist. \n");
-		return 1;
-	}
-
-	int linecounter = 1;
-
-	char buff[PATH_MAX];
-
-	while(fgets (buff, sizeof buff, filePtr)) {
-		if(linecounter == 1){
-			printf(buff);
-		} else {
-			printf("%s", buff);
-		}
-		linecounter ++;
-	}
-
-	printf("\n");
-
-
-	fclose(filePtr);
-
-	return 1;
-}
-
 // This function probably needs to be implemented in nutshell.c once the command table
 // is filled with cmds args flags pipes etc. and ready to be executed using execve()
 int pipeCommands(char *cmd1, char *cmd2) {
@@ -2022,12 +1923,6 @@ char* breakUpPathAndSearch(char *cmdName) {
 		pathVar = strtok(NULL, ":");
 	}
 	
-	if (ret == cmdName)
-		printf("Couldn't find %s\n", cmdName);
-	else {
-		printf("Found %s in %s\n", cmdName, ret);
-	}
-	
 	return ret;
 }
 
@@ -2070,6 +1965,13 @@ int putArgsInTable(char* name) {
 
 int putCmdInTable(char *name) {
 	strcpy(cmdTable.cmdList[cmdListIndex].name, name);
+
+	// Clear the args that may be there from cmds run before it and reset argindex
+	for (int i = 0; i < cmdTable.cmdList[cmdListIndex].argIndex; i++) {
+		cmdTable.cmdList[cmdListIndex].args[i][0] = '\0';
+	}
+	cmdTable.cmdList[cmdListIndex].argIndex = 0;
+
 	cmdListIndex++;
 	return 1;
 }
@@ -2077,17 +1979,16 @@ int putCmdInTable(char *name) {
 int runCmds() {
 	
 	for (int i = 0; i < cmdListIndex; i++) {
-		printf("trying to run %s...\n", cmdTable.cmdList[i].name); 
+		printf(""); 
 		char* pathVar = breakUpPathAndSearch(cmdTable.cmdList[i].name);
 		if (strcmp(pathVar, cmdTable.cmdList[i].name) != 0) {
 			int pid1 = fork();
-			printf("PID: %d \n", pid1);
+			//printf("PID: %d \n", pid1);
 			if (pid1 < 0) {
-				printf("ERROR piping (2)\n");
+				printf("ERROR\n");
 				return 1;
 			}
 			if (pid1 == 0) {
-				printf("...");
 				char* path = malloc(strlen("/bin/") + strlen(cmdTable.cmdList[i].name) + 1);
 
 				//MAKE PATH NAME
@@ -2101,7 +2002,6 @@ int runCmds() {
 				arg[0] = cmdTable.cmdList[i].name; //first arg is function name 
 				for(int j = 1; j< cmdTable.cmdList[i].argIndex+1; j++){
 					arg[j] = cmdTable.cmdList[i].args[j-1]; 			
-					
 				}
 
 				//SET LAST ONE TO NULL
@@ -2109,8 +2009,7 @@ int runCmds() {
 
 				//RUN EXECV
 				int status = execv(path, arg);
-				free(path);
-				printf("executed (%d).\n", status);			
+				free(path);			
 			}
 			waitpid(pid1, NULL, 0);
 
@@ -2118,7 +2017,7 @@ int runCmds() {
 		
 	}
 
-	 cmdListIndex = 0;//reset once everything run
+	cmdListIndex = 0;	//reset once everything run
 	
 	return 1;
 }
@@ -2140,13 +2039,3 @@ int seeCmd(){
     return 1;
 }
 
-int runNull(){
-
-	for(int i = 0; i<cmdListIndex; i++){
-       
-        //cmdTable.cmdList[cmdListIndex - 1].args[cmdTable.cmdList[cmdListIndex - 1].argIndex][0] = NULL;
-        cmdListIndex++;
-    }
-
-    return 1;
-}

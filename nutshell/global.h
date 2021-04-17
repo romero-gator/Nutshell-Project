@@ -12,8 +12,8 @@ struct aTable {
 };
 
 struct command {
-   char name[15];
-   char args[10][10];
+   char name[20];
+   char args[20][20];
    int argIndex;
 };
 struct pipeline {

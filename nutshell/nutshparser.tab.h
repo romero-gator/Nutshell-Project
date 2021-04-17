@@ -39,67 +39,49 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     BYE = 258,
-     PRINTENV = 259,
-     UNSETENV = 260,
-     CD = 261,
-     STRING = 262,
-     ALIAS = 263,
-     UNALIAS = 264,
-     SETENV = 265,
-     ECHO = 266,
-     LS = 267,
-     DATE = 268,
-     TOUCH = 269,
-     MKDIR = 270,
-     RM = 271,
-     RMDIR = 272,
-     CAT = 273,
-     PIPE = 274,
-     REDIRECT = 275,
-     RUNSILENTLY = 276,
-     LSCMD = 277,
-     RUN = 278,
-     NOLL = 279,
-     END = 280
+     STRING = 258,
+     PIPE = 259,
+     ALIAS = 260,
+     UNALIAS = 261,
+     SETENV = 262,
+     REDIRECT = 263,
+     RUNSILENTLY = 264,
+     LSCMD = 265,
+     PRINTENV = 266,
+     UNSETENV = 267,
+     RUN = 268,
+     CD = 269,
+     BYE = 270,
+     END = 271
    };
 #endif
 /* Tokens.  */
-#define BYE 258
-#define PRINTENV 259
-#define UNSETENV 260
-#define CD 261
-#define STRING 262
-#define ALIAS 263
-#define UNALIAS 264
-#define SETENV 265
-#define ECHO 266
-#define LS 267
-#define DATE 268
-#define TOUCH 269
-#define MKDIR 270
-#define RM 271
-#define RMDIR 272
-#define CAT 273
-#define PIPE 274
-#define REDIRECT 275
-#define RUNSILENTLY 276
-#define LSCMD 277
-#define RUN 278
-#define NOLL 279
-#define END 280
+#define STRING 258
+#define PIPE 259
+#define ALIAS 260
+#define UNALIAS 261
+#define SETENV 262
+#define REDIRECT 263
+#define RUNSILENTLY 264
+#define LSCMD 265
+#define PRINTENV 266
+#define UNSETENV 267
+#define RUN 268
+#define CD 269
+#define BYE 270
+#define END 271
 
 
 
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 43 "nutshparser.y"
+#line 34 "nutshparser.y"
 {
 	char *string;
 }
 /* Line 1529 of yacc.c.  */
-#line 103 "nutshparser.tab.h"
+#line 85 "nutshparser.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1

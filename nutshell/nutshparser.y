@@ -14,6 +14,14 @@
 
 int yylex(void);
 int yyerror(char *s);
+char* breakUpPathAndSearch(char *cmdName);
+char* searchPath(char *basePath, const int root, char *cmdName);
+int pipeCommands(char *cmd1, char *cmd2);
+int putCmdInTable(char *name);
+int putArgsInTable(char *name);
+int runCmds();
+int checkBuiltIn(char* name);
+int seeCmd();
 int runCD(char* arg);
 int runSetAlias(char *name, char *word);
 int printEnv();
@@ -21,30 +29,13 @@ int alias();
 int setEnv(char *var, char *word);
 int unSetEnv(char *var);
 int unAlias(char *var);
-int echo(char *word);
-int list();
-int date();
-int touch(char *filename);
-int makedir(char *path);
-int rm(char *filename);
-int removedir(char *path);
-int cat(char *filename);
-int pipeCommands(char *cmd1, char *cmd2);
-char* breakUpPathAndSearch(char *cmdName);
-char* searchPath(char *basePath, const int root, char *cmdName);
-int putCmdInTable(char *name);
-int putArgsInTable(char *name);
-int runCmds();
-int checkBuiltIn(char* name);
-int seeCmd();
-int runNull();
 %}
 
 %union {
 	char *string;
 }
 %type <string> line word stmt
-%token <string> BYE PRINTENV UNSETENV CD STRING ALIAS UNALIAS SETENV ECHO LS DATE TOUCH MKDIR RM RMDIR CAT PIPE REDIRECT RUNSILENTLY LSCMD RUN NOLL END
+%token <string> STRING PIPE ALIAS UNALIAS SETENV REDIRECT RUNSILENTLY LSCMD PRINTENV UNSETENV RUN CD BYE END
 
 %%
 input    :
@@ -53,38 +44,29 @@ input    :
 	;
 
 line	:
-	END								{return 1;}
-	| BYE END 		            	{exit(1); return 1; }
+	LSCMD END						{seeCmd(); return 1;}
+	| RUN END						{runCmds(); return 1;}
+	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
 	| PRINTENV END					{printEnv(); return 1;}
-	| CD STRING END        			{runCD($2); return 1;}
+	| UNSETENV STRING END			{unSetEnv($2); return 1;}
 	| ALIAS END						{alias(); return 1;}
 	| ALIAS STRING STRING END		{runSetAlias($2, $3); return 1;}
-	| DATE END						{date(); return 1;}
 	| UNALIAS STRING END			{unAlias($2); return 1;}
-	| ECHO STRING END				{echo($2); return 1;}
-	| SETENV STRING STRING END		{setEnv($2, $3); return 1;}
-	| UNSETENV STRING END			{unSetEnv($2); return 1;}
-	| TOUCH STRING END 				{touch($2); return 1;}
-	| MKDIR STRING END 				{makedir($2); return 1;}
-	| RM STRING END 				{rm($2); return 1;}
-	| RMDIR STRING END 				{removedir($2); return 1;}
-	| CAT STRING END 				{cat($2); return 1;}
-	| LS END						{list(); return 1;}
-	| LSCMD END						{seeCmd(); return 1;}
-	| RUN END						{runCmds(); return 1;}
-	| NOLL END						{runNull(); return 1;}				
-	| stmt END						{ return 1;}	
+	| BYE END     					{exit(1); return 1;}
+	| CD STRING END        			{runCD($2); return 1;}
+	| END							{ return 1;}				
+	| stmt END						{ runCmds(); return 1;}	
 	;
 
 stmt	:
 	word
-	| stmt RUNSILENTLY		{printf("RUN IN BACKGROUND\n")}
-	| stmt PIPE stmt		{printf("PIPE COMMANDS\n");}
-	| stmt REDIRECT stmt	{printf("REDIRECT IO\n");}
+	| stmt RUNSILENTLY				{printf("RUN IN BACKGROUND\n")}
+	| stmt PIPE stmt				{printf("PIPE COMMANDS\n");}
+	| stmt REDIRECT stmt			{printf("REDIRECT IO\n");}
 
 word	:
-	STRING 					{ putCmdInTable($1); }
-	| word STRING 			{ putArgsInTable($2); }
+	STRING 							{ putCmdInTable($1); }
+	| word STRING 					{ putArgsInTable($2); }
 	;
 
 %%
@@ -116,13 +98,12 @@ int runCD(char* arg) {
 		}
 		else {
 			printf("Directory not found\n");
-                       	return 1;
+            return 1;
 		}
 	}
 }
 
 int runSetAlias(char *name, char *word) {
-	printf("\n");
 	for (int i = 0; i < aliasIndex; i++) {
 		if(strcmp(name, word) == 0){
 			printf("Error, expansion of \"%s\" would create a loop.\n", name);
@@ -267,123 +248,6 @@ int unAlias(char *name) {
 
 }
 
-int echo(char* word) {
-	printf(word);
-	printf("\n");
-	return 1;
-}
-
-int list() {
-	DIR *dir;
-    struct dirent *de;
-
-    dir = opendir(".");
-    while(dir)
-    {
-        de = readdir(dir);
-        if (!de) break;
-        printf("%s\n", de->d_name);
-    }
-
-    closedir(dir);
-	return 1;
-}
-
-int date() {
-	time_t rawtime;
-  	struct tm * timeinfo;
-
-  	time( &rawtime );
-  	timeinfo = localtime ( &rawtime );
-  	printf("Time and date: %s", asctime(timeinfo));
-	return 1;
-}
-
-int touch(char* filename) {
-	FILE *filePtr = NULL;
-	filePtr = fopen(filename, "a");
-
-	return 1;
-}
-
-int makedir(char* path) {
-	int status;
-
-	status = mkdir(path, 0777);
-
-	return 1;
-}
-
-int rm(char* filename) {
-
-	int success;
-
-	FILE *filePtr = NULL;
-	filePtr = fopen(filename, "w");
-
-	if(!filePtr) {
-		printf("File does not exist. \n");
-		return 1;
-	}
-
-	fclose(filePtr);
-	success = remove(filename);
-
-	if(success == 0){
-		printf("File deleted.");
-	} else {
-		printf("Unable to delete file.");
-	}
-
-	return 1;
-}
-
-int removedir(char* path) {
-	int status;
-
-	status = rmdir(path);
-
-	if(status == 0) {
-		printf("Directory deleted.");
-	} else {
-		printf("Unable to delete directory.");
-	}
-
-	return 1;
-}
-
-int cat(char* filename) {
-
-
-	FILE *filePtr = NULL;
-	filePtr = fopen(filename, "r");
-
-	if(!filePtr) {
-		printf("File does not exist. \n");
-		return 1;
-	}
-
-	int linecounter = 1;
-
-	char buff[PATH_MAX];
-
-	while(fgets (buff, sizeof buff, filePtr)) {
-		if(linecounter == 1){
-			printf(buff);
-		} else {
-			printf("%s", buff);
-		}
-		linecounter ++;
-	}
-
-	printf("\n");
-
-
-	fclose(filePtr);
-
-	return 1;
-}
-
 // This function probably needs to be implemented in nutshell.c once the command table
 // is filled with cmds args flags pipes etc. and ready to be executed using execve()
 int pipeCommands(char *cmd1, char *cmd2) {
@@ -439,12 +303,6 @@ char* breakUpPathAndSearch(char *cmdName) {
 		pathVar = strtok(NULL, ":");
 	}
 	
-	if (ret == cmdName)
-		printf("Couldn't find %s\n", cmdName);
-	else {
-		printf("Found %s in %s\n", cmdName, ret);
-	}
-	
 	return ret;
 }
 
@@ -487,6 +345,13 @@ int putArgsInTable(char* name) {
 
 int putCmdInTable(char *name) {
 	strcpy(cmdTable.cmdList[cmdListIndex].name, name);
+
+	// Clear the args that may be there from cmds run before it and reset argindex
+	for (int i = 0; i < cmdTable.cmdList[cmdListIndex].argIndex; i++) {
+		cmdTable.cmdList[cmdListIndex].args[i][0] = '\0';
+	}
+	cmdTable.cmdList[cmdListIndex].argIndex = 0;
+
 	cmdListIndex++;
 	return 1;
 }
@@ -494,17 +359,16 @@ int putCmdInTable(char *name) {
 int runCmds() {
 	
 	for (int i = 0; i < cmdListIndex; i++) {
-		printf("trying to run %s...\n", cmdTable.cmdList[i].name); 
+		printf(""); 
 		char* pathVar = breakUpPathAndSearch(cmdTable.cmdList[i].name);
 		if (strcmp(pathVar, cmdTable.cmdList[i].name) != 0) {
 			int pid1 = fork();
-			printf("PID: %d \n", pid1);
+			//printf("PID: %d \n", pid1);
 			if (pid1 < 0) {
-				printf("ERROR piping (2)\n");
+				printf("ERROR\n");
 				return 1;
 			}
 			if (pid1 == 0) {
-				printf("...");
 				char* path = malloc(strlen("/bin/") + strlen(cmdTable.cmdList[i].name) + 1);
 
 				//MAKE PATH NAME
@@ -518,7 +382,6 @@ int runCmds() {
 				arg[0] = cmdTable.cmdList[i].name; //first arg is function name 
 				for(int j = 1; j< cmdTable.cmdList[i].argIndex+1; j++){
 					arg[j] = cmdTable.cmdList[i].args[j-1]; 			
-					
 				}
 
 				//SET LAST ONE TO NULL
@@ -526,8 +389,7 @@ int runCmds() {
 
 				//RUN EXECV
 				int status = execv(path, arg);
-				free(path);
-				printf("executed (%d).\n", status);			
+				free(path);			
 			}
 			waitpid(pid1, NULL, 0);
 
@@ -535,7 +397,7 @@ int runCmds() {
 		
 	}
 
-	 cmdListIndex = 0;//reset once everything run
+	cmdListIndex = 0;	//reset once everything run
 	
 	return 1;
 }
@@ -552,17 +414,6 @@ int seeCmd(){
             printf("  %s  ", cmdTable.cmdList[i].args[j]);
         }
         printf("\n");
-    }
-
-    return 1;
-}
-
-int runNull(){
-
-	for(int i = 0; i<cmdListIndex; i++){
-       
-        //cmdTable.cmdList[cmdListIndex - 1].args[cmdTable.cmdList[cmdListIndex - 1].argIndex][0] = NULL;
-        cmdListIndex++;
     }
 
     return 1;
